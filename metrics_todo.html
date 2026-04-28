@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent·Eval — 剩余 70 指标 Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2440; --accent: #2563eb; --accent-light: #3b82f6;
+    --sky: #e0f2fe; --ice: #f0f9ff; --slate: #475569; --muted: #94a3b8;
+    --bg: #fafbfc; --card: #fff; --border: #e2e8f0;
+    --gold: #d97706; --green: #059669; --green-bg: #d1fae5;
+    --orange: #ea580c; --orange-bg: #fff7ed;
+    --purple: #7c3aed; --purple-bg: #ede9fe;
+    --rose: #be185d; --rose-bg: #fce7f3;
+    --teal: #0d9488; --teal-bg: #ccfbf1;
+    --red: #dc2626; --red-bg: #fef2f2;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Noto Sans SC',sans-serif; background:var(--bg); color:var(--navy); line-height:1.75; font-size:14px; -webkit-font-smoothing:antialiased; }
+
+  .cover { min-height:70vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; background:linear-gradient(160deg,#0f2440 0%,#1a3352 30%,#1e3a5f 50%,#2563eb 100%); padding:80px 24px; position:relative; overflow:hidden; }
+  .cover::before { content:''; position:absolute; top:-200px; right:-200px; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle,rgba(59,130,246,0.15) 0%,transparent 70%); }
+  .cover-label { font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:32px; }
+  .cover-title { font-family:'Playfair Display',serif; font-size:clamp(38px,6vw,68px); font-weight:900; color:#fff; letter-spacing:-1px; line-height:1.1; }
+  .cover-title .dot { color:var(--gold); font-size:0.6em; }
+  .cover-divider { width:80px; height:3px; background:var(--gold); margin:32px auto; border-radius:2px; }
+  .cover-subtitle { font-size:19px; font-weight:500; color:rgba(255,255,255,0.85); max-width:780px; margin-bottom:48px; }
+  .cover-meta { font-size:14px; color:rgba(255,255,255,0.55); line-height:2; max-width:820px; }
+  .cover-meta strong { color:rgba(255,255,255,0.85); font-weight:500; }
+
+  .main { max-width:1200px; margin:0 auto; padding:72px 24px 120px; }
+  h1 { font-family:'Playfair Display',serif; font-size:28px; font-weight:900; color:var(--navy); margin:56px 0 20px; padding-bottom:12px; border-bottom:3px solid var(--accent); display:flex; align-items:baseline; gap:12px; }
+  h1 .num { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500; color:var(--accent); background:var(--sky); padding:3px 9px; border-radius:4px; letter-spacing:1px; }
+  h1:first-of-type { margin-top:0; }
+  h2 { font-size:18px; font-weight:700; color:var(--accent); margin:32px 0 14px; display:flex; align-items:center; gap:8px; }
+  h2::before { content:''; width:4px; height:18px; background:var(--accent); border-radius:2px; flex-shrink:0; }
+  h3 { font-size:15px; font-weight:700; color:var(--navy); margin:24px 0 10px; padding-left:12px; border-left:3px solid var(--gold); }
+  p { margin-bottom:12px; color:var(--slate); }
+  .lead { font-size:15px; }
+
+  .stats { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin:24px 0; }
+  .stat-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; text-align:center; }
+  .stat-num { font-family:'Playfair Display',serif; font-size:30px; font-weight:900; color:var(--accent); line-height:1; margin-bottom:4px; }
+  .stat-label { font-size:11px; color:var(--muted); letter-spacing:0.5px; text-transform:uppercase; }
+
+  .highlight-box { background:var(--ice); border-left:4px solid var(--accent); padding:16px 20px; border-radius:0 8px 8px 0; margin:16px 0; }
+  .highlight-box p { margin-bottom:0; }
+  .warn-box { background:var(--red-bg); border-left:4px solid var(--red); padding:16px 20px; border-radius:0 8px 8px 0; margin:16px 0; }
+  .warn-box p { margin-bottom:0; color:#991b1b; }
+  .success-box { background:#f0fdf4; border-left:4px solid var(--green); padding:16px 20px; border-radius:0 8px 8px 0; margin:16px 0; }
+  .success-box p { margin-bottom:0; }
+
+  .legend { display:flex; gap:14px; flex-wrap:wrap; padding:12px 18px; background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:18px; font-size:12px; }
+  .legend-item { display:flex; align-items:center; gap:6px; color:var(--slate); }
+
+  .table-wrap { overflow-x:auto; margin:16px 0 28px; border-radius:10px; border:1px solid var(--border); box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  thead th { background:var(--navy); color:#fff; font-weight:500; padding:10px 12px; text-align:left; font-size:11.5px; letter-spacing:0.5px; white-space:nowrap; }
+  tbody td { padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:top; color:var(--slate); line-height:1.6; }
+  tbody tr:nth-child(even) { background:var(--ice); }
+  tbody tr:hover { background:var(--sky); transition:background 0.15s; }
+
+  .id-cell { font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--navy); font-size:11.5px; }
+  .mn { color:var(--navy); font-weight:600; font-size:12px; }
+
+  .tag { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; padding:1px 6px; border-radius:3px; letter-spacing:0.3px; white-space:nowrap; }
+  .detect-rule { background:#dcfce7; color:#15803d; }
+  .detect-judge { background:#fef3c7; color:#b45309; }
+  .detect-exp { background:var(--rose-bg); color:var(--rose); }
+  .detect-stat { background:var(--purple-bg); color:var(--purple); }
+
+  .prio { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; padding:2px 7px; border-radius:4px; white-space:nowrap; letter-spacing:0.5px; }
+  .prio-p0 { background:var(--red); color:#fff; }
+  .prio-p1 { background:var(--orange); color:#fff; }
+  .prio-p2 { background:var(--accent); color:#fff; }
+  .prio-p3 { background:var(--muted); color:#fff; }
+
+  .auto-yes { background:#dcfce7; color:#15803d; }
+  .auto-partial { background:#fef3c7; color:#b45309; }
+  .auto-no { background:#fee2e2; color:#dc2626; }
+
+  .feas-now { background:#dcfce7; color:#15803d; }
+  .feas-adapt { background:#fef3c7; color:#b45309; }
+  .feas-na { background:#f1f5f9; color:#94a3b8; }
+
+  .bucket-head { background:linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin:24px 0 12px; display:flex; align-items:center; gap:14px; }
+  .bucket-head .bucket-prio { font-family:'Playfair Display',serif; font-size:28px; font-weight:900; line-height:1; }
+  .bucket-head.p0 { border-left:6px solid var(--red); }
+  .bucket-head.p0 .bucket-prio { color:var(--red); }
+  .bucket-head.p1 { border-left:6px solid var(--orange); }
+  .bucket-head.p1 .bucket-prio { color:var(--orange); }
+  .bucket-head.p2 { border-left:6px solid var(--accent); }
+  .bucket-head.p2 .bucket-prio { color:var(--accent); }
+  .bucket-head.p3 { border-left:6px solid var(--muted); }
+  .bucket-head.p3 .bucket-prio { color:var(--muted); }
+  .bucket-head h3 { margin:0; padding:0; border:none; font-size:16px; font-weight:700; color:var(--navy); }
+  .bucket-head .bucket-desc { color:var(--slate); font-size:13px; }
+
+  .why-ptr { font-size:11.5px; color:var(--slate); font-style:italic; }
+  .why-ptr::before { content:'▸ '; color:var(--accent); font-style:normal; }
+
+  code { font-family:'JetBrains Mono',monospace; font-size:11.5px; background:var(--ice); padding:1px 5px; border-radius:3px; color:var(--navy); }
+
+  .footer { text-align:center; color:var(--muted); font-size:12px; margin-top:60px; padding-top:24px; border-top:1px solid var(--border); }
+
+  @media(max-width:900px) { .stats { grid-template-columns:repeat(3,1fr); } }
+  @media(max-width:600px) { .stats { grid-template-columns:repeat(2,1fr); } }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-label">Remaining Metrics · Roadmap · 2026-04-28</div>
+  <h1 class="cover-title" style="border:none;margin:0;padding:0;color:#fff;">Metric<span class="dot">·</span>Todo</h1>
+  <div class="cover-divider"></div>
+  <div class="cover-subtitle">Agent·Eval 剩余 70 条指标清单 — 从已完成 26 条到全量 96 条的推进路线</div>
+  <div class="cover-meta">
+    <div><strong>完成</strong> 26 条（34 个实现项，均为 RULE 类，已覆盖 596 条轨迹）<br>
+    <strong>剩余</strong> 70 条，本文件按优先级 P0→P3 排序并给出实施建议</div>
+    <div style="margin-top:12px;">P0 元认知/思-行一致性 · P1 零分归因 · P2 自动化统计 · P3 实验/不适用</div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ===== 00 OVERVIEW ===== -->
+<h1><span class="num">00</span>盘点：已完成 vs 剩余</h1>
+
+<div class="stats">
+  <div class="stat-card"><div class="stat-num">96</div><div class="stat-label">Total</div></div>
+  <div class="stat-card"><div class="stat-num" style="color:var(--green);">26</div><div class="stat-label">Done (RULE)</div></div>
+  <div class="stat-card"><div class="stat-num" style="color:var(--red);">70</div><div class="stat-label">Remaining</div></div>
+  <div class="stat-card"><div class="stat-num" style="color:var(--orange);">37</div><div class="stat-label">Need JUDGE</div></div>
+  <div class="stat-card"><div class="stat-num" style="color:var(--accent);">13</div><div class="stat-label">Pure STAT</div></div>
+  <div class="stat-card"><div class="stat-num" style="color:var(--muted);">10</div><div class="stat-label">EXP / N/A</div></div>
+</div>
+
+<h2>已完成 26 条（不再重复）</h2>
+<div class="highlight-box">
+  <p>已实现为 <code>gen_task_behavioral_all.py</code> 中的 M02, M03, M05, M07, M10, M11, M12, M14, M15, M16, M19, M20, M21, M23, M24, M43, M53, M54, M55, M57, M71, M72, M74(部分), M76, M93, M96 — 对应目录 #2, #3, #5, #7, #10, #11, #12, #14, #15, #16, #19, #20, #21, #23, #24, #43, #53, #54, #55, #57, #71, #72, #74, #76, #93, #96。已在 20 个 Task × 596 runs 上全量计算。</p>
+</div>
+
+<h2>图例</h2>
+<div class="legend">
+  <div class="legend-item"><span class="tag prio prio-p0">P0</span>核心缺口 — 元认知/思-行一致性</div>
+  <div class="legend-item"><span class="tag prio prio-p1">P1</span>零分归因 — 失败根因与修复链</div>
+  <div class="legend-item"><span class="tag prio prio-p2">P2</span>自动化扩展 — 统计/规则可跑</div>
+  <div class="legend-item"><span class="tag prio prio-p3">P3</span>低优先 — 实验级或不适用</div>
+</div>
+<div class="legend">
+  <div class="legend-item"><span class="tag detect-rule">RULE</span>规则</div>
+  <div class="legend-item"><span class="tag detect-judge">JUDGE</span>LLM Judge</div>
+  <div class="legend-item"><span class="tag detect-exp">EXP</span>对照实验</div>
+  <div class="legend-item"><span class="tag detect-stat">STAT</span>统计检验</div>
+  <div class="legend-item"><span class="tag auto-yes">AUTO</span>全自动</div>
+  <div class="legend-item"><span class="tag auto-partial">SEMI</span>需部分人工/Judge</div>
+  <div class="legend-item"><span class="tag auto-no">MANUAL</span>需实验/标注</div>
+</div>
+
+
+<!-- ==================== P0 ==================== -->
+<div class="bucket-head p0">
+  <div class="bucket-prio">P0</div>
+  <div>
+    <h3>核心缺口 · 10 条 · 元认知 / 思-行一致性 / 自我感知</h3>
+    <div class="bucket-desc">直接回应"模型在长任务中是否觉察自己的决策链路、是否感知早期错误、CoT 中的思考是否会被执行"。这是现在 26 条规则指标最抓不到的一层。</div>
+  </div>
+</div>
+
+<div class="table-wrap"><table>
+<thead><tr><th>目录#</th><th>指标</th><th>定义</th><th>检测</th><th>自动化</th><th>为什么 P0</th></tr></thead>
+<tbody>
+<tr><td class="id-cell">#69</td><td class="mn">推理-行动一致性</td><td>reasoning 中声明的下一步计划与实际 tool_call 的匹配度（按 step 采样）</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">用户明确问："思维链里的思考是否一定会执行"。这条就是答案。M10 只抓文本重复，抓不到"说要改 prompt 却改了 loss"。</td></tr>
+<tr><td class="id-cell">#67</td><td class="mn">Agent 自评校准误差</td><td>Agent 声称完成的 subtask 数 vs 实际通过的数</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">Task 16 全零分但不少 run 最终声称"已完成"——自欺率是现在指标完全抓不到的头号黑数。</td></tr>
+<tr><td class="id-cell">#52</td><td class="mn">阶段性错误类型分布</td><td>按 trajectory 前 20% / 中 60% / 后 20% 统计错误类型变化</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">直接量化"早期错误是否被后期携带"。对应用户说的"对早期错误的自我感知"。</td></tr>
+<tr><td class="id-cell">#40</td><td class="mn">错误固化率</td><td>经过 summarization/压缩后，错误仍持续影响的比例</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">步数 >200 的低分 run 几乎都是"失忆后仍沿错误路径"的典型——这是最值钱的信号之一。</td></tr>
+<tr><td class="id-cell">#68</td><td class="mn">Feedback 利用率</td><td>拿到 eval/judge feedback 后，下次重试是否针对反馈做了修改</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">M93 只看分数是否升了，不判"升的原因是不是对反馈作出响应"。这条补全闭环。</td></tr>
+<tr><td class="id-cell">#70</td><td class="mn">假设-验证循环率</td><td>reasoning 中形成假设后紧接验证动作的比例</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">区分"有假设驱动的调试"和"盲修"。是好 debug agent 的强指纹。</td></tr>
+<tr><td class="id-cell">#39</td><td class="mn">传播模式分布</td><td>即时崩溃 / 格式坍塌 / 延迟爆炸 / 摘要固化 / 资源耗竭 / 监控死锁 六类占比</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">把 596 条失败归成 6 个可解释 bucket，是 Section 3.3 的主结论产品。</td></tr>
+<tr><td class="id-cell">#37</td><td class="mn">Propagation length</td><td>根因 → 分数暴露之间的步数距离</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">量化"错得多早 vs 发现多晚"。和 #52 成对使用。</td></tr>
+<tr><td class="id-cell">#50</td><td class="mn">Evidence-to-Action Gap</td><td>已收集到正确信息但未正确执行的 step 占比（CodeTracer）</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">和 #69 配对：#69 看局部一致性，#50 看全局"信息到位却没行动"的缺口。</td></tr>
+<tr><td class="id-cell">#66</td><td class="mn">反馈执行率</td><td>人类/判官反馈后，覆盖到的反馈点数 / 总反馈点</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">InnovatorBench 里 judge 节点就是"反馈"。这条能直接跑。</td></tr>
+</tbody></table></div>
+
+<div class="success-box">
+  <p><strong>P0 建议实施方案</strong>：挑一个裁判模型（claude-sonnet-4-6 或 gpt-5），对每条轨迹做 3 类采样 —— ① 每 20 步抽 1 个 react 做 <b>#69</b>；② 对每个 error/eval-drop 事件做 <b>#37 / #40 / #50 / #52</b>；③ 对每次 judge/eval feedback 后 5 步做 <b>#66 / #68 / #70</b>。单轨迹 judge 调用 ≈ 15–25 次，596 条全量 ~ 12k calls。先在 Task 14 + Task 16 跑 pilot，用 Spearman(judge_metric, score) 筛 signal。</p>
+</div>
+
+
+<!-- ==================== P1 ==================== -->
+<div class="bucket-head p1">
+  <div class="bucket-prio">P1</div>
+  <div>
+    <h3>零分归因 · 16 条 · 失败根因 / 修复质量 / 交互判断</h3>
+    <div class="bucket-desc">报告里大量零分簇，目前只能看到"步数、token、action 比例"但说不出"哪一步错了、错在哪、为什么没救回来"。这一层指标能把失败报告从"现象描述"升级到"诊断报告"。</div>
+  </div>
+</div>
+
+<div class="table-wrap"><table>
+<thead><tr><th>目录#</th><th>指标</th><th>定义</th><th>检测</th><th>自动化</th><th>为什么 P1</th></tr></thead>
+<tbody>
+<tr><td class="id-cell">#35</td><td class="mn">根因定位准确率</td><td>Judge 推断的根因 vs 人工标注的一致率</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">要靠抽样人工标注校准 judge，但 pilot 阶段可先不做。</td></tr>
+<tr><td class="id-cell">#47</td><td class="mn">Step-level Precision</td><td>标记失败 step 的精确率</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">CodeTracer 风格。和 #48/#49 一组。</td></tr>
+<tr><td class="id-cell">#48</td><td class="mn">Step-level Recall</td><td>实际失败 step 被识别的比例</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">同上</td></tr>
+<tr><td class="id-cell">#49</td><td class="mn">Step-level F1</td><td>P/R 调和平均</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">同上</td></tr>
+<tr><td class="id-cell">#6</td><td class="mn">错误恢复次数</td><td>错误后成功恢复的次数（0 / 1–2 / 3+）</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">M10 只抓"盲重试"，抓不到"成功恢复"。</td></tr>
+<tr><td class="id-cell">#13</td><td class="mn">跨阶段约束违反数</td><td>pipeline 后期违反前期决策约束的次数</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">对应用户说的"前后决策一致性"。</td></tr>
+<tr><td class="id-cell">#41</td><td class="mn">按错误类型分层固化率</td><td>语法类 vs 设计决策类分别测固化率</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">#40 的细分。</td></tr>
+<tr><td class="id-cell">#42</td><td class="mn">CAT 类失败占比</td><td>盲目重试+Eval滥用+资源泄漏+跨阶段违反 合计占比</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">组合已有 M10/M11/M12 + JUDGE 的 #13。</td></tr>
+<tr><td class="id-cell">#63</td><td class="mn">Thinking hedging 频率</td><td>reasoning 中不确定性表达的密度（可能/大概/似乎…）</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">#64 的前置；也能用正则粗做一版 AUTO。</td></tr>
+<tr><td class="id-cell">#64</td><td class="mn">不确定性校准误差 ECE</td><td>hedging 强度分桶 × 正确率 的校准曲线</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">回答"模型表达的自信是不是真的"。</td></tr>
+<tr><td class="id-cell">#59</td><td class="mn">检查点召回率</td><td>预设检查点处主动求证的比例</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">需先为任务标注检查点。</td></tr>
+<tr><td class="id-cell">#60</td><td class="mn">交互精确率</td><td>主动交互中确实需要人类决策的比例</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">#59/#60/#61 一组。</td></tr>
+<tr><td class="id-cell">#61</td><td class="mn">交互 F1</td><td>#59 和 #60 的调和平均</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">同上</td></tr>
+<tr><td class="id-cell">#65</td><td class="mn">问题质量分</td><td>主动提问的具体性 / 可回答性 / 价值（1-5）</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">agent 只会闷头做还是会问清楚。</td></tr>
+<tr><td class="id-cell">#73</td><td class="mn">双通道推理差异</td><td>reasoning 通道 vs content 通道表达差异（仅 Kimi 等有 reasoning 的模型）</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">对 CoT agent 才有信号。</td></tr>
+<tr><td class="id-cell">#95</td><td class="mn">子任务依赖传播长度</td><td>subtask_k 的错误首次影响 subtask_k+n 的 n</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">#37 在 subtask 粒度的版本。</td></tr>
+</tbody></table></div>
+
+
+<!-- ==================== P2 ==================== -->
+<div class="bucket-head p2">
+  <div class="bucket-prio">P2</div>
+  <div>
+    <h3>自动化扩展 · 24 条 · 统计检验 / 去偏 / 规则补全</h3>
+    <div class="bucket-desc">都是全自动可跑的（STAT 或 RULE），只需在现有 26 条数值之上跑 scipy/sklearn。属于"做完 P0/P1 之后顺手就能出论文 Section 3.6"的那部分。</div>
+  </div>
+</div>
+
+<div class="table-wrap"><table>
+<thead><tr><th>目录#</th><th>指标</th><th>定义</th><th>检测</th><th>自动化</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td class="id-cell">#1</td><td class="mn">任务领域</td><td>Research/Code/Frontend/Data 分桶</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">给 task 1–40 人工写一次映射表即可。</td></tr>
+<tr><td class="id-cell">#4</td><td class="mn">检查点数 K</td><td>任务预设的人类检查点数</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">需按任务标注。</td></tr>
+<tr><td class="id-cell">#8</td><td class="mn">环境默认状态检查率</td><td>使用环境资源前显式 check 的比例</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">需识别"环境资源操作"集合。</td></tr>
+<tr><td class="id-cell">#9</td><td class="mn">外部声明验证率</td><td>prompt 中可验证事实被主动验证的比例</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">需标注 prompt 中的可验证声明。</td></tr>
+<tr><td class="id-cell">#17</td><td class="mn">相似工具混淆率</td><td>同功能组内选错工具频率（如 search_dir vs find_file）</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">需先定义工具相似组。</td></tr>
+<tr><td class="id-cell">#18</td><td class="mn">冗余工具调用率</td><td>非必要工具调用/总调用</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">需参考"理想轨迹"。</td></tr>
+<tr><td class="id-cell">#22</td><td class="mn">同步误用率</td><td>长命令中同步等待占比</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">识别 run_command 是否带 background。</td></tr>
+<tr><td class="id-cell">#25</td><td class="mn">Effective Action Ratio</td><td>推进目标的有效动作/总动作</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">可用 judge 粗打，再校准。</td></tr>
+<tr><td class="id-cell">#26</td><td class="mn">Iteration Budget Saturation</td><td>成功率不再提升的步数拐点</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">score vs step 曲线拟合。</td></tr>
+<tr><td class="id-cell">#33</td><td class="mn">缩放瓶颈点</td><td>性能衰减曲线首个断崖拐点</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">与 #26 同类，可一起做。</td></tr>
+<tr><td class="id-cell">#56</td><td class="mn">Bug 复现率</td><td>首次 edit 前是否运行了复现测试</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">和 M57 对称。半天能加。</td></tr>
+<tr><td class="id-cell">#58</td><td class="mn">编辑回滚率</td><td>同位置恢复之前内容的次数/总编辑</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">需 diff 语义比较。</td></tr>
+<tr><td class="id-cell">#62</td><td class="mn">被动触发比例</td><td>human intervention 中由 agent 报错触发的比例</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">需识别 human 节点。</td></tr>
+<tr><td class="id-cell">#75</td><td class="mn">跨模型同任务效率</td><td>同 task_id 下不同 model 的 step 差</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">已有数据，只差一张表。</td></tr>
+<tr><td class="id-cell">#77</td><td class="mn">顺序依赖满足率</td><td>工具间数据流依赖是否正确维护</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">需定义依赖图。</td></tr>
+<tr><td class="id-cell">#78</td><td class="mn">Token-Controlled 成功率</td><td>GLM(score~model+token+task) 回归</td><td><span class="tag detect-stat">STAT</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">statsmodels 一行。</td></tr>
+<tr><td class="id-cell">#79</td><td class="mn">Step-Controlled 成功率</td><td>同上，控制步数</td><td><span class="tag detect-stat">STAT</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">去掉 verbosity bias。</td></tr>
+<tr><td class="id-cell">#80</td><td class="mn">Reasoning-Length-Controlled</td><td>控制 reasoning 长度后的评分</td><td><span class="tag detect-stat">STAT</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">仅含 reasoning 的模型。</td></tr>
+<tr><td class="id-cell">#84</td><td class="mn">Verbosity-Normalized Score</td><td>等 token/step 预算下标准化评分</td><td><span class="tag detect-stat">STAT</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">对比排行榜必备。</td></tr>
+<tr><td class="id-cell">#85</td><td class="mn">Sρ(m,a)</td><td>模型×属性 Spearman 秩相关</td><td><span class="tag detect-stat">STAT</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">InterpretEval 5-件套①</td></tr>
+<tr><td class="id-cell">#86</td><td class="mn">Sσ(m,a)</td><td>模型×属性 各桶性能标准差</td><td><span class="tag detect-stat">STAT</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">②</td></tr>
+<tr><td class="id-cell">#87</td><td class="mn">ζ(a) task-independent 偏差</td><td>mean_m(Sρ(m,a))</td><td><span class="tag detect-stat">STAT</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">③</td></tr>
+<tr><td class="id-cell">#88</td><td class="mn">ρ(a) task-dependent 变异性</td><td>std_m(Sρ(m,a))</td><td><span class="tag detect-stat">STAT</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">④</td></tr>
+<tr><td class="id-cell">#89</td><td class="mn">Bucket-wise 自诊断</td><td>argMax/argMin per model×attribute</td><td><span class="tag detect-stat">STAT</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">⑤ — 出模型画像雷达图</td></tr>
+<tr><td class="id-cell">#90</td><td class="mn">Significance Testing Protocol</td><td>Friedman + Wilcoxon + Holm-Bonferroni</td><td><span class="tag detect-stat">STAT</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">scipy.stats + scikit-posthocs</td></tr>
+<tr><td class="id-cell">#94</td><td class="mn">编译-运行时错误比</td><td>编译失败 vs 运行时逻辑失败占比</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">observation.message 分类器。</td></tr>
+</tbody></table></div>
+
+
+<!-- ==================== P3 ==================== -->
+<div class="bucket-head p3">
+  <div class="bucket-prio">P3</div>
+  <div>
+    <h3>低优先 · 20 条 · 实验 / 对照组 / 参考轨迹依赖 / 本 benchmark 不适用</h3>
+    <div class="bucket-desc">要么需要搭对照实验（有无 summarization、注入 action log），要么需要参考轨迹（Trajectory EM），要么需要人工标注（人类偏好相关性），在现有 596 轨迹上落地成本高。暂列待办。</div>
+  </div>
+</div>
+
+<div class="table-wrap"><table>
+<thead><tr><th>目录#</th><th>指标</th><th>定义</th><th>检测</th><th>自动化</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td class="id-cell">#27</td><td class="mn">Trajectory EM</td><td>完整工具序列与参考完全匹配率</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">无参考轨迹，N/A。</td></tr>
+<tr><td class="id-cell">#28</td><td class="mn">Tool Inclusion Rate</td><td>必需工具至少出现的比例</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">无 oracle 工具集。</td></tr>
+<tr><td class="id-cell">#29</td><td class="mn">Parameter Schema 合规率</td><td>工具参数符合 schema 的比例</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">需先定义全部 28 个 action_type 的 schema。</td></tr>
+<tr><td class="id-cell">#30</td><td class="mn">Parameter Value 精确率</td><td>参数值与预期值匹配度</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">无参考值。</td></tr>
+<tr><td class="id-cell">#31</td><td class="mn">参数盲选率</td><td>选对工具但参数明显不匹配</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">需定义"明显不匹配"。</td></tr>
+<tr><td class="id-cell">#32</td><td class="mn">Traj-Satisfy</td><td>LLM 对整条轨迹的 0-10 综合满意度</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">和 overall_score 高度相关，增量有限。</td></tr>
+<tr><td class="id-cell">#34</td><td class="mn">Simple/Hard 性能差</td><td>直接查询 vs 间接查询性能差</td><td><span class="tag detect-rule">RULE</span></td><td><span class="tag auto-yes">AUTO</span></td><td class="why-ptr">需配对设计，本 benchmark 无。</td></tr>
+<tr><td class="id-cell">#36</td><td class="mn">因果图跨 judge 一致率</td><td>不同 judge 产出 causal graph 的 κ</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">#35 的元校验，pilot 之后做。</td></tr>
+<tr><td class="id-cell">#38</td><td class="mn">Propagation length 分布</td><td>#37 按模型聚合的均值/方差</td><td><span class="tag detect-judge">JUDGE</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">#37 出完后一行代码。</td></tr>
+<tr><td class="id-cell">#44</td><td class="mn">固化率下降幅度</td><td>干预后 #40 相对 baseline 下降</td><td><span class="tag detect-exp">EXP</span></td><td><span class="tag auto-no">MANUAL</span></td><td class="why-ptr">需跑对照 agent。</td></tr>
+<tr><td class="id-cell">#45</td><td class="mn">有/无 summarization 下 CAT 差</td><td>对比两环境</td><td><span class="tag detect-exp">EXP</span></td><td><span class="tag auto-no">MANUAL</span></td><td class="why-ptr">需消融实验。</td></tr>
+<tr><td class="id-cell">#46</td><td class="mn">Action log 干预有效性</td><td>注入结构化日志后 CAT 下降</td><td><span class="tag detect-exp">EXP</span></td><td><span class="tag auto-no">MANUAL</span></td><td class="why-ptr">同上。</td></tr>
+<tr><td class="id-cell">#51</td><td class="mn">Reflective Replay 恢复率</td><td>失败轨迹反思重放后的成功率</td><td><span class="tag detect-exp">EXP</span></td><td><span class="tag auto-no">MANUAL</span></td><td class="why-ptr">需重跑 agent。</td></tr>
+<tr><td class="id-cell">#81</td><td class="mn">Gameability</td><td>prompt 操纵后评分变化幅度</td><td><span class="tag detect-exp">EXP</span></td><td><span class="tag auto-no">MANUAL</span></td><td class="why-ptr">红队实验。</td></tr>
+<tr><td class="id-cell">#82</td><td class="mn">Adversarial Gain</td><td>非能力手段获得的最大增益</td><td><span class="tag detect-exp">EXP</span></td><td><span class="tag auto-no">MANUAL</span></td><td class="why-ptr">同上。</td></tr>
+<tr><td class="id-cell">#83</td><td class="mn">人类偏好相关性</td><td>自动排名 vs 人类排名 Spearman ρ</td><td><span class="tag detect-stat">STAT</span></td><td><span class="tag auto-partial">SEMI</span></td><td class="why-ptr">需人类标注。做最终验证时再收。</td></tr>
+<tr><td class="id-cell">#91</td><td class="mn">Judge rule 自动挖掘 coverage</td><td>自动挖出规则 vs 人工规则的覆盖率</td><td><span class="tag detect-exp">EXP</span></td><td><span class="tag auto-no">MANUAL</span></td><td class="why-ptr">方法论研究，不是 benchmark 指标。</td></tr>
+<tr><td class="id-cell">#92</td><td class="mn">Judge rule 自动挖掘 precision</td><td>自动规则的误判率</td><td><span class="tag detect-exp">EXP</span></td><td><span class="tag auto-no">MANUAL</span></td><td class="why-ptr">同上。</td></tr>
+</tbody></table></div>
+
+
+<!-- ==================== ROADMAP ==================== -->
+<h1><span class="num">99</span>推进路线（建议）</h1>
+
+<div class="table-wrap"><table>
+<thead><tr><th>阶段</th><th>交付物</th><th>范围</th><th>预估工作量</th></tr></thead>
+<tbody>
+<tr><td><span class="tag prio prio-p0">Sprint 1</span></td><td>P0 pilot：在 Task 14 + Task 16 两个任务上跑 #69 + #67 + #52</td><td>~60 runs × 20 judge calls ≈ 1.2k calls</td><td>1 天写 prompt + 1 天跑 + 1 天出图</td></tr>
+<tr><td><span class="tag prio prio-p0">Sprint 2</span></td><td>P0 全量：扩到 20 task × 596 runs</td><td>~12k judge calls</td><td>2 天（看 judge model 吞吐）</td></tr>
+<tr><td><span class="tag prio prio-p1">Sprint 3</span></td><td>P1 zero-score 归因：#35 / #40 / #47-50 / #68</td><td>以 P0 infrastructure 为底座，补 rubric</td><td>3–5 天</td></tr>
+<tr><td><span class="tag prio prio-p2">Sprint 4</span></td><td>P2 统计 + 去偏：#78-90 全套</td><td>纯代码，不需 judge</td><td>1–2 天（一个脚本）</td></tr>
+<tr><td><span class="tag prio prio-p2">Sprint 5</span></td><td>P2 规则补全：#26/#33/#56/#58/#75/#94</td><td>扩展 <code>gen_task_behavioral_all.py</code></td><td>1 天</td></tr>
+<tr><td><span class="tag prio prio-p3">Later</span></td><td>P3 实验类：挑 2-3 条最有洞察的做（如 #51 reflective replay）</td><td>需要重跑 agent</td><td>按需</td></tr>
+</tbody></table></div>
+
+<div class="warn-box">
+  <p><strong>先做 pilot 再全量</strong>：P0 所有指标建议先在 2 个对比鲜明的任务（建议 Task 14 entropy-collapse 和 Task 16 全零分）上跑 pilot，用 Spearman(judge_metric, score) 筛掉 |ρ|<0.2 的信号——那些是 rubric 没定义好或现象不普遍。在此之前不要花钱做全量。</p>
+</div>
+
+<div class="footer">
+  Agent·Eval · Remaining 70 Metrics Roadmap · 2026-04-28<br>
+  Basis: <a href="https://lyumanshanye.github.io/agent-eval-reports/">596 trajectories × 20 tasks</a> · 已完成 26 / 96 条指标
+</div>
+
+</div>
+</body>
+</html>
